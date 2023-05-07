@@ -3,7 +3,7 @@ const path = require('path');
 const {stdin, stdout, exit} = require('process')
 
 function closeFILE() {
-    console.log('File closed');
+    console.log('File closed.');
     writeTxtStream.end();
     process.exit();
 }

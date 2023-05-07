@@ -14,7 +14,9 @@ fs.mkdir(copyPathToFolder, {recursive: true}, (err) => {
             let filePath = path.join(pathToFolder, file);
             let copyFilePath = path.join(copyPathToFolder, file);
             fs.copyFile(filePath, copyFilePath, err => {
-                if(err) throw err;
+                if (err) {
+                    throw err
+                };
             });
         });
     });
