@@ -4,11 +4,6 @@ const path = require('path');
 let cssStyles = [];
 const folderName = 'styles';
 const pathToFolder = path.join(__dirname, folderName);
-// console.log("ptf", pathToFolder);
-
-// fs.readdir(pathToFolder, (err, files) =>{
-//     console.log("files:", files);
-// });
 
 fs.readdir(pathToFolder, async (err, files) => {
 	if (err) throw err;
