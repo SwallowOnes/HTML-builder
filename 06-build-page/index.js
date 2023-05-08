@@ -7,6 +7,9 @@ const pathToProj = path.join(__dirname, 'project-dist');
 const pathToStyles = path.join(__dirname, 'styles');
 const pathToProjAssets = path.join(pathToProj, 'assets');
 const pathToAssets = path.join(__dirname, 'assets');
+const pathToTemp = path.join(__dirname, 'template.html');
+const pathToIndex = path.join(__dirname, 'project-dist');
+const components = path.join(__dirname, 'components');
 
 
 //css
@@ -72,6 +75,21 @@ async function copyAssets(pathToAssets, pathToProj) {
   }
 }
 
+//HTM and replace
+async function replaceHTML() {
+  let HTMLIndexTemp = await fs.promises.readFile(pathToTemp, 'utf-8');
+  const regex = /{{(.*?)}}/g;
+
+  HTMLIndexTemp = HTMLIndexTemp.replace(regex, function replacer(match, replacePath) {
+    // console.log("1", match[1]);
+    replacePath = path.join(components, `${replacePath}.html`);
+    return fs.readFileSync(replacePath, 'utf8');
+});
+
+  fs.promises.writeFile(path.join(pathToProj, 'index.html'), HTMLIndexTemp, 'utf-8');
+}
+
+replaceHTML();
 copyAssets(pathToAssets, pathToProjAssets);
 
 
