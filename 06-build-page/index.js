@@ -2,6 +2,8 @@ const { rejects } = require('assert');
 const fs = require('fs');
 const path = require('path');
 let cssStyles = [];
+let HTMLIndexTemp2 = '';
+
 
 const pathToProj = path.join(__dirname, 'project-dist');
 const pathToStyles = path.join(__dirname, 'styles');
@@ -80,20 +82,37 @@ async function replaceHTML() {
   const regex = /{{(.*?)}}/g;
   const matches = HTMLIndexTemp.matchAll(regex);
 
-  for (let match of matches){
-    const replacePath = match[1];
-    let componentReplace = path.join(components, `${replacePath}.html`);
-    const contentHTML = await fs.promises.readFile(componentReplace, 'utf8');
-    HTMLIndexTemp = HTMLIndexTemp.replace(match[0], contentHTML);
+//   for (let match of matches){
+//     const replacePath = match[1];
+//     let componentReplace = path.join(components, `${replacePath}.html`);
+//     const contentHTML = await fs.promises.readFile(componentReplace, 'utf8');
+//     HTMLIndexTemp = HTMLIndexTemp.replace(match[0], contentHTML);
 
-}
-//   HTMLIndexTemp = HTMLIndexTemp.replace(regex, function replacer(match, replacePath) {
-//     // console.log("1", match[1]);
-//     replacePath = path.join(components, `${replacePath}.html`);
-//     return fs.promises.readFile(replacePath, 'utf-8');
-// });
+// }
+  // const replaceHTML = () => {
+  //   return new Promise(async (resolve) => {
+  //     const result = HTMLIndexTemp.replace(regex, async function replacer(match, replacePath) {
+  //       replacePath = path.join(components, `${replacePath}.html`);
+  //       let text = await fs.promises.readFile(replacePath, 'utf-8');
+  //       return text;
+  //     });
+  //   })
+  // }
+  let B = 0; //B for BigData
+  HTMLIndexTemp2 = HTMLIndexTemp;
+  HTMLIndexTemp = HTMLIndexTemp.replace(regex, async function replacer(match, replacePath) {
+    let compName = `{{${replacePath}}}`;
+    B += 1;
+    replacePath = path.join(components, `${replacePath}.html`);
+    let text = await fs.promises.readFile(replacePath, 'utf-8');
+    HTMLIndexTemp2 = HTMLIndexTemp2.replace(compName, text);
+    //console.log("replace",compName, HTMLIndexTemp2.replace(compName, text))
+    if (B===3) {
+        await fs.promises.writeFile(path.join(pathToProj, 'index.html'), HTMLIndexTemp2, 'utf-8');
+    }
+    return text;
+});
 
-  fs.promises.writeFile(path.join(pathToProj, 'index.html'), HTMLIndexTemp, 'utf-8');
 }
 
 replaceHTML();
