@@ -78,12 +78,20 @@ async function copyAssets(pathToAssets, pathToProj) {
 async function replaceHTML() {
   let HTMLIndexTemp = await fs.promises.readFile(pathToTemp, 'utf-8');
   const regex = /{{(.*?)}}/g;
+  const matches = HTMLIndexTemp.matchAll(regex);
 
-  HTMLIndexTemp = HTMLIndexTemp.replace(regex, function replacer(match, replacePath) {
-    // console.log("1", match[1]);
-    replacePath = path.join(components, `${replacePath}.html`);
-    return fs.promises.readFile(replacePath, 'utf-8');
-});
+  for (let match of matches){
+    const replacePath = match[1];
+    let componentReplace = path.join(components, `${replacePath}.html`);
+    const contentHTML = await fs.promises.readFile(componentReplace, 'utf8');
+    HTMLIndexTemp = HTMLIndexTemp.replace(match[0], contentHTML);
+
+}
+//   HTMLIndexTemp = HTMLIndexTemp.replace(regex, function replacer(match, replacePath) {
+//     // console.log("1", match[1]);
+//     replacePath = path.join(components, `${replacePath}.html`);
+//     return fs.promises.readFile(replacePath, 'utf-8');
+// });
 
   fs.promises.writeFile(path.join(pathToProj, 'index.html'), HTMLIndexTemp, 'utf-8');
 }
