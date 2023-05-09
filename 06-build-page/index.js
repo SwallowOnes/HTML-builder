@@ -8,7 +8,6 @@ const pathToStyles = path.join(__dirname, 'styles');
 const pathToProjAssets = path.join(pathToProj, 'assets');
 const pathToAssets = path.join(__dirname, 'assets');
 const pathToTemp = path.join(__dirname, 'template.html');
-const pathToIndex = path.join(__dirname, 'project-dist');
 const components = path.join(__dirname, 'components');
 
 
@@ -83,7 +82,7 @@ async function replaceHTML() {
   HTMLIndexTemp = HTMLIndexTemp.replace(regex, function replacer(match, replacePath) {
     // console.log("1", match[1]);
     replacePath = path.join(components, `${replacePath}.html`);
-    return fs.readFileSync(replacePath, 'utf8');
+    return fs.promises.readFile(replacePath, 'utf-8');
 });
 
   fs.promises.writeFile(path.join(pathToProj, 'index.html'), HTMLIndexTemp, 'utf-8');
@@ -91,6 +90,3 @@ async function replaceHTML() {
 
 replaceHTML();
 copyAssets(pathToAssets, pathToProjAssets);
-
-
-
