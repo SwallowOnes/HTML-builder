@@ -98,18 +98,17 @@ async function replaceHTML() {
   //     });
   //   })
   // }
-  let B = 0; //B for BigData
   HTMLIndexTemp2 = HTMLIndexTemp;
   HTMLIndexTemp = HTMLIndexTemp.replace(regex, async function replacer(match, replacePath) {
     let compName = `{{${replacePath}}}`;
-    B += 1;
+ 
     replacePath = path.join(components, `${replacePath}.html`);
     let text = await fs.promises.readFile(replacePath, 'utf-8');
     HTMLIndexTemp2 = HTMLIndexTemp2.replace(compName, text);
     //console.log("replace",compName, HTMLIndexTemp2.replace(compName, text))
-    if (B===3) {
+  
         await fs.promises.writeFile(path.join(pathToProj, 'index.html'), HTMLIndexTemp2, 'utf-8');
-    }
+ 
     return text;
 });
 
